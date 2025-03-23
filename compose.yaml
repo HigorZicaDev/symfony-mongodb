@@ -1,0 +1,46 @@
+services:
+  php:
+    container_name: php-app-symfony
+    build:
+      context: .
+      dockerfile: docker/php/Dockerfile
+      args:
+        USER_ID: ${UID:-1000}
+        GROUP_ID: ${GID:-1000}
+    volumes:
+      - .:/var/www:delegated
+    depends_on:
+      - mongodb
+    networks:
+      - app_network
+
+  nginx:
+    build: ./docker/nginx
+    ports:
+      - "8000:80"
+    volumes:
+      - ./public:/var/www/public:delegated
+    depends_on:
+      - php
+    networks:
+      - app_network
+
+  mongodb:
+    image: mongo:latest
+    container_name: mongodb-app-symfony
+    environment:
+      MONGO_INITDB_DATABASE: dbapp
+      MONGO_INITDB_ROOT_USERNAME: higor
+      MONGO_INITDB_ROOT_PASSWORD: higor3433
+    volumes:
+      - mongodb_data:/data/db
+    networks:
+      - app_network
+    ports:
+      - "27017:27017"   # Expondo a porta 27017 para o host
+
+networks:
+  app_network:
+
+volumes:
+  mongodb_data:

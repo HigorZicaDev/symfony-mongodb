@@ -1,0 +1,20 @@
+doctrine_mongodb:
+    default_connection: default
+    connections:
+        default:
+            # server: 'mongodb://%env(MONGO_HOST)%:%env(MONGO_PORT)%'  # Use o esquema mongodb:// aqui
+            server: 'mongodb://higor:higor3433@mongodb:27017'  # Use o esquema mongodb:// aqui
+            options: []
+    default_database: dbapp
+    document_managers:
+        default:
+            connection: default
+            database: '%env(MONGO_DATABASE)%'
+            auto_mapping: true
+            mappings:
+                App:
+                    is_bundle: false
+                    type: attribute
+                    dir: '%kernel.project_dir%/src/Document'
+                    prefix: 'App\Document'
+                    alias: App
